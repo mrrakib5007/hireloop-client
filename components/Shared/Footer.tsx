@@ -31,7 +31,7 @@ const footerGroups = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-white/8 bg-black px-4 py-9 text-white sm:px-6 sm:py-11">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:gap-10">
           <div className="max-w-56">
             <Link href="/" aria-label="HireLoop home" className="inline-flex">

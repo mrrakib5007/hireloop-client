@@ -6,7 +6,7 @@ export function CTASection() {
     <section
       id="cta"
       aria-labelledby="cta-heading"
-      className="relative isolate flex min-h-[340px] items-center justify-center overflow-hidden bg-black px-4 py-16 text-center text-white sm:min-h-[380px] sm:px-6"
+      className="relative isolate flex min-h-85 items-center justify-center overflow-hidden bg-black px-4 py-16 text-center text-white sm:min-h-95 sm:px-6"
     >
       <div
         aria-hidden="true"

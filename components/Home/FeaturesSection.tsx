@@ -59,13 +59,13 @@ export function FeaturesSection() {
       aria-labelledby="features-heading"
       className="bg-[#171717] px-4 py-14 text-white sm:px-6 sm:py-16"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-7xl">
         <div className="mb-9 text-center sm:mb-11">
           <p className="mb-3 text-[9px] font-medium tracking-[0.3em] text-violet-300 uppercase">
             <span aria-hidden="true" className="mr-2 text-violet-400">
               ✦
             </span>
-            Features 01
+            Features Jobs
           </p>
           <h2
             id="features-heading"

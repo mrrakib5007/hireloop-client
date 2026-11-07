@@ -62,7 +62,7 @@ export function PricingSection() {
             <span aria-hidden="true" className="mr-2 text-violet-400">
               ✦
             </span>
-            Pricing 02
+            Pricing
           </p>
           <h2
             id="pricing-heading"
@@ -90,15 +90,21 @@ export function PricingSection() {
               type="button"
               aria-pressed={yearly}
               onClick={() => setYearly(true)}
-              className={`rounded-full px-3 py-1.5 transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors ${
                 yearly ? "bg-white text-black" : "text-neutral-400"
               }`}
             >
               Yearly
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-[8px] leading-none font-semibold ${
+                  yearly
+                    ? "bg-fuchsia-100 text-fuchsia-700"
+                    : "bg-fuchsia-500 text-white"
+                }`}
+              >
+                SAVE 20%
+              </span>
             </button>
-            <span className="rounded-full bg-fuchsia-500 px-2 py-1 text-[9px] font-semibold text-white">
-              SAVE 20%
-            </span>
           </div>
         </div>
 
@@ -110,7 +116,7 @@ export function PricingSection() {
             return (
               <li
                 key={plan.name}
-                className={`flex flex-col rounded-xl border p-4 sm:p-5 ${
+                className={`flex min-h-72 flex-col rounded-xl border p-5 sm:min-h-76 sm:p-6 ${
                   plan.featured
                     ? "border-white/30 bg-[#141414]"
                     : "border-white/10 bg-[#080808]"
