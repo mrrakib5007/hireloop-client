@@ -26,9 +26,9 @@ function Logo() {
       <Image
         src="/images/logo.png"
         alt="HireLoop"
-        width={104}
+        width={98}
         height={28}
-        style={{ width: "auto", height: "1.75rem" }}
+        className="h-7 w-auto"
         priority
       />
     </Link>
@@ -87,9 +87,9 @@ function MobileMenu() {
             <Image
               src="/images/logo.png"
               alt="HireLoop"
-              width={104}
+              width={98}
               height={28}
-              style={{ width: "auto", height: "1.75rem" }}
+              className="h-7 w-auto"
             />
           </SheetTitle>
         </SheetHeader>

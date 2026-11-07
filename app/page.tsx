@@ -1,8 +1,9 @@
+import HeroSection from "@/components/Home/HeroSection";
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh flex-col bg-neutral-950 text-white">
-      
-    </div>
+    <main className="min-h-screen bg-[#030305] overflow-x-hidden">
+      <HeroSection />
+    </main>
   )
 }
