@@ -4,6 +4,7 @@ import Link from "next/link"
 export function CTASection() {
   return (
     <section
+      id="cta"
       aria-labelledby="cta-heading"
       className="relative isolate flex min-h-[340px] items-center justify-center overflow-hidden bg-black px-4 py-16 text-center text-white sm:min-h-[380px] sm:px-6"
     >
@@ -42,7 +43,7 @@ export function CTASection() {
             Create an account
           </Link>
           <Link
-            href="/pricing"
+            href="/#pricing"
             className="inline-flex h-9 items-center justify-center rounded-md border border-white/15 bg-black/30 px-4 text-[11px] font-medium text-white transition-colors hover:bg-white/10"
           >
             View pricing

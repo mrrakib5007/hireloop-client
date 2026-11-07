@@ -55,6 +55,7 @@ const features = [
 export function FeaturesSection() {
   return (
     <section
+      id="features"
       aria-labelledby="features-heading"
       className="bg-[#171717] px-4 py-14 text-white sm:px-6 sm:py-16"
     >

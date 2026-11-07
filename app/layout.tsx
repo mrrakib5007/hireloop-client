@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-import { SiteNavbar } from "@/components/Shared/Navbar";
+import { cn } from "@/lib/utils"
+import { SiteNavbar } from "@/components/Shared/Navbar"
+import { SiteFooter } from "@/components/Shared/Footer"
 
 export const metadata: Metadata = {
   title: "HireLoop - Find Your Dream Job Today",
@@ -18,7 +19,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -34,12 +35,18 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        geist.variable
+      )}
     >
-      <body className="bg-neutral-950 text-white overflow-x-hidden">
+      <body className="overflow-x-hidden bg-neutral-950 text-white">
         <ThemeProvider>
           <SiteNavbar />
           {children}
+          <SiteFooter />
         </ThemeProvider>
       </body>
     </html>
