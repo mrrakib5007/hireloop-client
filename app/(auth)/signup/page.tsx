@@ -2,7 +2,16 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Eye, EyeOff, Loader2, LockKeyhole, Mail, UserRound } from "lucide-react"
+import {
+  Building2,
+  Eye,
+  EyeOff,
+  Loader2,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
@@ -12,7 +21,16 @@ const namePattern = /^[\p{L}\p{M}][\p{L}\p{M}\s.'-]*$/u
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const passwordPattern = /^.{8,}$/
 
+const roles = [
+  { id: "candidate", label: "Candidate", icon: UserRound },
+  { id: "recruiter", label: "Recruiter", icon: Building2 },
+  { id: "admin", label: "Admin", icon: ShieldCheck },
+] as const
+
+type Role = (typeof roles)[number]["id"]
+
 export default function SignUpPage() {
+  const [selectedRole, setSelectedRole] = useState<Role>("candidate")
   const [showPassword, setShowPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -43,6 +61,12 @@ export default function SignUpPage() {
     const email = String(formData.get("email") || "").trim()
     const password = String(formData.get("password") || "")
 
+    const validRoles: readonly string[] = ["candidate", "recruiter", "admin"]
+    if (!validRoles.includes(selectedRole)) {
+      setErrorMessage("Please select a valid role (Candidate, Recruiter, or Admin).")
+      return
+    }
+
     if (!namePattern.test(name)) {
       setErrorMessage("Enter a valid name.")
       return
@@ -64,7 +88,8 @@ export default function SignUpPage() {
         email,
         password,
         name,
-      })
+        role: selectedRole,
+      } as Parameters<typeof authClient.signUp.email>[0])
 
       if (error) {
         setIsSubmitting(false)
@@ -108,6 +133,35 @@ export default function SignUpPage() {
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          {/* Role Selector Options */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-neutral-200">
+              Select Role
+            </label>
+            <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/10 bg-black/40 p-1.5">
+              {roles.map((role) => {
+                const Icon = role.icon
+                const isSelected = selectedRole === role.id
+                return (
+                  <button
+                    key={role.id}
+                    type="button"
+                    onClick={() => setSelectedRole(role.id)}
+                    disabled={isSubmitting}
+                    className={`flex flex-col items-center justify-center gap-1.5 rounded-lg py-2.5 px-2 text-xs font-semibold transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-violet-600 text-white shadow-md shadow-violet-600/30 ring-1 ring-violet-400/50"
+                        : "text-neutral-400 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Icon className="size-4.5" />
+                    <span>{role.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label
               htmlFor="name"

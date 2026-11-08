@@ -38,9 +38,10 @@ export function SiteFooter() {
               <Image
                 src="/images/logo.png"
                 alt="HireLoop"
-                width={98}
-                height={28}
+                width={154}
+                height={44}
                 className="h-7 w-auto"
+                style={{ width: "auto" }}
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-neutral-400">

@@ -44,7 +44,7 @@ hireloop-client/
 ├── app/
 │   ├── (auth)/
 │   │   ├── signin/page.tsx      # Sign In page (session redirect + validation)
-│   │   └── signup/page.tsx      # Sign Up page (account registration)
+│   │   └── signup/page.tsx      # Sign Up page (account registration + role selector)
 │   ├── api/
 │   │   └── auth/[...all]/       # Better Auth API route handler
 │   ├── globals.css              # Tailwind v4 theme, OKLCH colors, layers
@@ -60,10 +60,10 @@ hireloop-client/
 │   │   ├── Navbar.tsx           # Sticky glassmorphic navbar with mobile drawer
 │   │   ├── UserProfileDropdown.tsx # Session avatar & profile dropdown
 │   │   └── Footer.tsx           # Multi-column footer & copyright
-│   ├── ui/                      # Base UI primitives (buttons, sheets, etc.)
+│   ├── ui/                      # Base UI primitives (button.tsx, sheet.tsx)
 │   └── Loading.tsx              # Centered spinner loading component
 ├── lib/
-│   ├── auth.ts                  # Better Auth server instance & MongoDB adapter
+│   ├── auth.ts                  # Better Auth server instance, role schema & MongoDB adapter
 │   ├── auth-client.ts           # Client auth helpers (useSession, signIn, signOut)
 │   └── utils.ts                 # Utility functions (cn class merging)
 ├── public/
@@ -107,7 +107,7 @@ Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
 
 ---
 
-## 5. Authentication & State Best Practices
+## 5. Authentication, Roles & State Best Practices
 
 1. **Client Hook Import:**
    Always import authentication utilities directly from `@/lib/auth-client`:
@@ -115,7 +115,12 @@ Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
    import { useSession, signOut, signIn, signUp } from "@/lib/auth-client"
    ```
 
-2. **No Navigation During Render (Zero Side-Effects in Component Body):**
+2. **Role System & Validation:**
+   - Supported user roles are strictly: `"candidate"`, `"recruiter"`, and `"admin"`.
+   - Role validation is enforced on both the client (UI check in `SignUpPage`) and server (`databaseHooks.user.create.before` and `databaseHooks.user.update.before` in `lib/auth.ts`).
+   - If an unauthorized or arbitrary role value is submitted, an `APIError("BAD_REQUEST")` is returned.
+
+3. **No Navigation During Render (Zero Side-Effects in Component Body):**
    Never call `router.push()` or trigger navigation directly inside the body of a React component during render. Always execute route changes inside a `useEffect`:
    ```tsx
    useEffect(() => {
@@ -125,7 +130,7 @@ Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
    }, [session, isPending, callbackUrl, router])
    ```
 
-3. **User Profile Image Fallback:**
+4. **User Profile Image Fallback:**
    When rendering user avatars, always provide an image fallback to `/profile.jpg` in case `user.image` is null, empty, or fails to load:
    ```tsx
    <Image
@@ -138,7 +143,7 @@ Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
    />
    ```
 
-4. **Rules of Hooks:**
+5. **Rules of Hooks:**
    All React hooks (`useState`, `useRouter`, `useSearchParams`, `useSession`, `useEffect`) must be declared unconditionally at the very top of components before any early returns.
 
 ---
@@ -149,3 +154,14 @@ Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
 * **Glassmorphism:** Use `backdrop-blur-xl`, `border-white/10`, and translucent backgrounds (`bg-neutral-900/90` or `bg-white/5`).
 * **Brand Accents:** Vibrant violet/indigo (`#6055f6`, `bg-violet-600`, `text-violet-400`).
 * **Responsiveness:** Mobile-first approach. Verify layouts at 360px (mobile), 768px (tablet), 1024px (desktop), and 1440px+ (large display).
+
+---
+
+## 7. Documentation Synchronization with README.md (MANDATORY)
+
+Whenever a new feature is added, updated, or modified in the codebase:
+1. **Always update `README.md` immediately** to reflect the new feature under the `## Features` section (or update `## Technology` / `## Description` if a new dependency, model, or capability is introduced).
+2. **Preserve strict formatting in `README.md`:**
+   - Keep only four primary sections: `# HireLoop`, `## Description`, `## Technology`, and `## Features`.
+   - Do NOT add emojis, unnecessary marketing badges, or redundant icons to `README.md`.
+   - Keep bullet points concise, accurate, and professional.
