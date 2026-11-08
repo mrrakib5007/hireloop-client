@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { SiteNavbar } from "@/components/Shared/Navbar"
 import { SiteFooter } from "@/components/Shared/Footer"
+import { Toaster } from "react-hot-toast"
 
 export const metadata: Metadata = {
   title: "HireLoop - Find Your Dream Job Today",
@@ -42,9 +43,13 @@ export default function RootLayout({
         geist.variable
       )}
     >
-      <body className="overflow-x-hidden bg-neutral-950 text-white">
+      <body
+        suppressHydrationWarning
+        className="overflow-x-hidden bg-neutral-950 text-white"
+      >
         <ThemeProvider>
           <SiteNavbar />
+          <Toaster position="top-center" reverseOrder={false} />
           {children}
           <SiteFooter />
         </ThemeProvider>

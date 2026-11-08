@@ -6,7 +6,7 @@ export function CTASection() {
     <section
       id="cta"
       aria-labelledby="cta-heading"
-      className="relative isolate flex min-h-85 items-center justify-center overflow-hidden bg-black px-4 py-16 text-center text-white sm:min-h-95 sm:px-6"
+      className="relative isolate flex min-h-115 items-center justify-center overflow-hidden bg-black px-4 py-20 text-center text-white sm:min-h-130 sm:px-6 sm:py-28"
     >
       <div
         aria-hidden="true"
@@ -17,34 +17,34 @@ export function CTASection() {
           alt=""
           fill
           sizes="100vw"
-          className="object-cover object-top opacity-80"
+          className="object-cover object-top opacity-85"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_50%_0%,rgba(83,68,255,0.45),transparent_72%),linear-gradient(to_bottom,transparent_10%,rgba(0,0,0,0.25)_52%,#000_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_50%_0%,rgba(83,68,255,0.45),transparent_72%),linear-gradient(to_bottom,transparent_10%,rgba(0,0,0,0.3)_50%,#000_100%)]" />
       </div>
 
-      <div className="relative mx-auto max-w-xl">
+      <div className="relative mx-auto max-w-2xl">
         <h2
           id="cta-heading"
-          className="text-2xl leading-tight font-medium tracking-tight sm:text-3xl"
+          className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15]"
         >
           Your next role is
           <br />
           already looking for you
         </h2>
-        <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-neutral-300 sm:text-sm">
+        <p className="mx-auto mt-4 max-w-lg text-base sm:text-lg leading-relaxed text-neutral-300">
           Find your next opportunity with HireLoop. Your future starts with the
           right connection.
         </p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <Link
             href="/signup"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-white px-4 text-[11px] font-medium text-black transition-colors hover:bg-neutral-200"
+            className="inline-flex h-12 w-48 sm:w-52 items-center justify-center rounded-xl bg-violet-600 px-6 text-sm sm:text-base font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:bg-violet-500 hover:scale-[1.02] cursor-pointer text-center"
           >
             Create an account
           </Link>
           <Link
             href="/#pricing"
-            className="inline-flex h-9 items-center justify-center rounded-md border border-white/15 bg-black/30 px-4 text-[11px] font-medium text-white transition-colors hover:bg-white/10"
+            className="inline-flex h-12 w-48 sm:w-52 items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 text-sm sm:text-base font-semibold text-white backdrop-blur-md transition-all hover:bg-white/15 hover:scale-[1.02] cursor-pointer text-center"
           >
             View pricing
           </Link>

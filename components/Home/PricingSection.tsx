@@ -54,11 +54,11 @@ export function PricingSection() {
     <section
       id="pricing"
       aria-labelledby="pricing-heading"
-      className="bg-black px-4 py-16 text-white sm:px-6 sm:py-20"
+      className="bg-black px-4 py-16 text-white sm:px-6 sm:py-24"
     >
       <div className="mx-auto max-w-5xl">
-        <div className="mb-9 text-center sm:mb-11">
-          <p className="mb-3 text-[9px] font-medium tracking-[0.3em] text-violet-300 uppercase">
+        <div className="mb-12 text-center sm:mb-16">
+          <p className="mb-2.5 text-xs sm:text-sm font-semibold tracking-[0.25em] text-violet-400 uppercase">
             <span aria-hidden="true" className="mr-2 text-violet-400">
               ✦
             </span>
@@ -66,7 +66,7 @@ export function PricingSection() {
           </p>
           <h2
             id="pricing-heading"
-            className="text-2xl leading-tight font-medium tracking-tight sm:text-3xl"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-white"
           >
             Pay for the leverage,
             <br />
@@ -74,14 +74,14 @@ export function PricingSection() {
           </h2>
           <div
             aria-label="Billing period"
-            className="mt-5 inline-flex items-center gap-1 rounded-full border border-white/10 bg-[#151515] p-1 text-[10px]"
+            className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-[#141418] p-1 text-sm"
           >
             <button
               type="button"
               aria-pressed={!yearly}
               onClick={() => setYearly(false)}
-              className={`rounded-full px-3 py-1.5 transition-colors ${
-                !yearly ? "bg-white text-black" : "text-neutral-400"
+              className={`rounded-full px-4 py-1.5 font-medium transition-all cursor-pointer ${
+                !yearly ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-white"
               }`}
             >
               Monthly
@@ -90,25 +90,19 @@ export function PricingSection() {
               type="button"
               aria-pressed={yearly}
               onClick={() => setYearly(true)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors ${
-                yearly ? "bg-white text-black" : "text-neutral-400"
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-medium transition-all cursor-pointer ${
+                yearly ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-white"
               }`}
             >
               Yearly
-              <span
-                className={`rounded-full px-1.5 py-0.5 text-[8px] leading-none font-semibold ${
-                  yearly
-                    ? "bg-fuchsia-100 text-fuchsia-700"
-                    : "bg-fuchsia-500 text-white"
-                }`}
-              >
+              <span className="rounded-full bg-violet-600 px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase text-white">
                 SAVE 20%
               </span>
             </button>
           </div>
         </div>
 
-        <ul className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+        <ul className="grid items-center gap-5 sm:grid-cols-3 lg:gap-6 pt-3">
           {plans.map((plan) => {
             const Icon = plan.icon
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice
@@ -116,54 +110,66 @@ export function PricingSection() {
             return (
               <li
                 key={plan.name}
-                className={`flex min-h-72 flex-col rounded-xl border p-5 sm:min-h-76 sm:p-6 ${
+                className={`relative flex flex-col justify-between rounded-2xl border transition-all ${
                   plan.featured
-                    ? "border-white/30 bg-[#141414]"
-                    : "border-white/10 bg-[#080808]"
+                    ? "border-violet-500/60 bg-[#12121b] p-7 sm:py-10 sm:px-8 shadow-2xl shadow-violet-500/15 ring-2 ring-violet-500/40 z-10 sm:scale-[1.03]"
+                    : "border-white/10 bg-[#0a0a0f] p-6 sm:p-7 hover:border-white/20"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-medium">
-                    <Icon
-                      aria-hidden="true"
-                      className="size-3.5 text-violet-300"
-                      strokeWidth={1.7}
-                    />
-                    {plan.name}
+                {plan.featured && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-violet-600 px-3.5 py-0.5 text-[11px] font-bold tracking-wider uppercase text-white shadow-md">
+                    Most Popular
+                  </span>
+                )}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5 text-base font-semibold text-white">
+                      <span className="flex size-8 items-center justify-center rounded-lg bg-violet-500/20 text-violet-400">
+                        <Icon aria-hidden="true" className="size-4.5" strokeWidth={2} />
+                      </span>
+                      {plan.name}
+                    </div>
                   </div>
-                  <p className="text-lg font-semibold tracking-tight">
-                    ${price}
-                    <span className="ml-1 text-[10px] font-normal text-neutral-500">
-                      /mo
+
+                  <div className="mt-5 flex items-baseline gap-1">
+                    <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                      ${price}
                     </span>
+                    <span className="text-sm font-medium text-neutral-400">
+                      /month
+                    </span>
+                  </div>
+
+                  <p className="mt-2.5 text-sm text-neutral-400 leading-relaxed">
+                    {plan.description}
                   </p>
+
+                  <div className="my-5 h-px bg-white/10" />
+
+                  <ul className="space-y-3">
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-center gap-3 text-sm text-neutral-300"
+                      >
+                        <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-violet-400">
+                          <Check aria-hidden="true" className="size-3" strokeWidth={2.5} />
+                        </span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="mt-2 text-[10px] text-neutral-400">
-                  {plan.description}
-                </p>
-                <ul className="mt-5 flex-1 space-y-3 border-t border-white/10 pt-4">
-                  {plan.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-2 text-[10px] text-neutral-300"
-                    >
-                      <Check
-                        aria-hidden="true"
-                        className="size-3 shrink-0 text-neutral-500"
-                      />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+
                 <Link
                   href="/signup"
-                  className={`mt-5 inline-flex h-9 items-center justify-center rounded-md px-3 text-[10px] font-medium transition-colors ${
+                  className={`mt-7 inline-flex h-11 items-center justify-center rounded-xl px-5 text-sm font-semibold transition-all cursor-pointer ${
                     plan.featured
-                      ? "bg-white text-black hover:bg-neutral-200"
-                      : "bg-[#202020] text-white hover:bg-[#2b2b2b]"
+                      ? "bg-violet-600 text-white hover:bg-violet-500 shadow-lg shadow-violet-600/30 hover:scale-[1.01]"
+                      : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
                   }`}
                 >
-                  Create for Free
+                  Get Started
                 </Link>
               </li>
             )

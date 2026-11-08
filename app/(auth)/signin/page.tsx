@@ -1,18 +1,41 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
-import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react"
+import { Suspense, useEffect, useState } from "react"
+import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
+import { useRouter, useSearchParams } from "next/navigation"
+import toast from "react-hot-toast"
+import Loading from "@/components/Loading"
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const passwordPattern = /^.{8,}$/
 
-export default function SignInPage() {
+function SignInForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const { data: session, isPending } = authClient.useSession()
 
-  function handleSubmit(event) {
+  // Redirect to callbackUrl if user is already authenticated
+  useEffect(() => {
+    if (!isPending && session) {
+      router.push(callbackUrl)
+    }
+  }, [session, isPending, callbackUrl, router])
+
+  if (isPending || session) {
+    return (
+      <main className="flex min-h-[calc(100svh-4.5rem)] items-center justify-center">
+        <Loading text={session ? "Redirecting..." : "Checking session..."} />
+      </main>
+    )
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage("")
 
@@ -30,7 +53,28 @@ export default function SignInPage() {
       return
     }
 
-    console.log("Sign in data:", { email, password })
+    setIsSubmitting(true)
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+      })
+
+      if (error) {
+        setIsSubmitting(false)
+        return toast.error(`Login failed: ${error.message}`)
+      }
+
+      if (data) {
+        toast.success("Login successful!")
+        router.push(callbackUrl)
+        router.refresh()
+      }
+    } catch (err: unknown) {
+      setIsSubmitting(false)
+      const message = err instanceof Error ? err.message : "Something went wrong"
+      toast.error(`Login failed: ${message}`)
+    }
   }
 
   return (
@@ -44,19 +88,6 @@ export default function SignInPage() {
         className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0b0b10]/90 p-6 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-8"
       >
         <div className="mb-7 text-center">
-          <Link
-            href="/"
-            aria-label="HireLoop home"
-            className="mb-6 inline-flex rounded outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
-          >
-            <Image
-              src="/images/logo.png"
-              alt="HireLoop"
-              width={98}
-              height={28}
-              className="h-7 w-auto"
-            />
-          </Link>
           <p className="mb-2 text-[10px] font-medium tracking-[0.25em] text-violet-300 uppercase">
             Welcome back
           </p>
@@ -91,7 +122,8 @@ export default function SignInPage() {
                 autoComplete="email"
                 placeholder="you@example.com"
                 required
-                className="h-11 w-full rounded-lg border border-white/10 bg-black/50 pr-3 pl-10 text-sm text-white transition outline-none placeholder:text-neutral-600 focus:border-violet-400/70 focus:ring-2 focus:ring-violet-400/20"
+                disabled={isSubmitting}
+                className="h-11 w-full rounded-lg border border-white/10 bg-black/50 pr-3 pl-10 text-sm text-white transition outline-none placeholder:text-neutral-600 focus:border-violet-400/70 focus:ring-2 focus:ring-violet-400/20 disabled:opacity-50"
               />
             </div>
           </div>
@@ -115,7 +147,8 @@ export default function SignInPage() {
                 autoComplete="current-password"
                 placeholder="Enter your password"
                 required
-                className="h-11 w-full rounded-lg border border-white/10 bg-black/50 pr-11 pl-10 text-sm text-white transition outline-none placeholder:text-neutral-600 focus:border-violet-400/70 focus:ring-2 focus:ring-violet-400/20"
+                disabled={isSubmitting}
+                className="h-11 w-full rounded-lg border border-white/10 bg-black/50 pr-11 pl-10 text-sm text-white transition outline-none placeholder:text-neutral-600 focus:border-violet-400/70 focus:ring-2 focus:ring-violet-400/20 disabled:opacity-50"
               />
               <button
                 type="button"
@@ -144,9 +177,17 @@ export default function SignInPage() {
 
           <button
             type="submit"
-            className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg bg-violet-500 px-5 text-sm font-medium text-white transition-colors hover:bg-violet-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
+            disabled={isSubmitting}
+            className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-violet-500 px-5 text-sm font-medium text-white transition-colors hover:bg-violet-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300 disabled:opacity-60 cursor-pointer"
           >
-            Sign in
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <span>Sign in</span>
+            )}
           </button>
         </form>
 
@@ -161,5 +202,19 @@ export default function SignInPage() {
         </p>
       </section>
     </main>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-[calc(100svh-4.5rem)] items-center justify-center">
+          <Loading text="Loading..." />
+        </main>
+      }
+    >
+      <SignInForm />
+    </Suspense>
   )
 }
