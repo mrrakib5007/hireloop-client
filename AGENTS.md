@@ -8,32 +8,144 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Tailwind CSS v4 Canonical Class Rules
+# HireLoop — Agent & Developer Engineering Guide
 
-This project uses **Tailwind CSS v4**. Always follow modern Tailwind v4 canonical classes to prevent `suggestCanonicalClasses` IntelliSense warnings:
+Welcome to the **HireLoop Client** codebase. This document defines the project architecture, tech stack conventions, authentication flows, and strict design rules that every AI coding assistant and engineer must adhere to.
 
-1. **Color Opacities:**
-   - Always use integer percentage values rather than arbitrary decimal brackets:
-     - Use `bg-white/2` instead of `bg-white/[0.02]`
-     - Use `bg-white/4` instead of `bg-white/[0.04]`
-     - Use `border-white/8` instead of `border-white/[0.08]`
-     - Use `border-white/6` instead of `border-white/[0.06]`
-     - Use `border-white/10` instead of `border-white/[0.1]`
+---
 
-2. **Spacing, Heights & Widths:**
-   - Always use standard Tailwind numeric scale (multiples of 4px) instead of arbitrary pixel values:
-     - `h-px` and `w-px` instead of `h-[1px]` / `w-[1px]`
-     - `min-h-115` instead of `min-h-[460px]`
-     - `min-h-130` instead of `min-h-[520px]`
-     - `h-105` instead of `h-[420px]`
-     - `w-220` instead of `w-[880px]`
-     - `md:-mt-75` instead of `md:-mt-[300px]`
-     - `lg:-mt-90` instead of `lg:-mt-[360px]`
+## 1. Project Overview
 
-3. **Gradients (Tailwind v4 syntax):**
-   - Use `bg-linear-to-r` instead of `bg-gradient-to-r`
-   - Use `bg-linear-to-t` instead of `bg-gradient-to-t`
-   - Use `bg-linear-to-b` instead of `bg-gradient-to-b`
+**HireLoop** is a modern, high-performance job board and talent platform connecting job seekers with world-class employers. It features an atmospheric dark-mode glassmorphic aesthetic, seamless authentication, and pixel-perfect responsive layouts.
 
-4. **Mask & Modern Utilities:**
-   - Use `mask-[...]` instead of `[mask-image:...]`
+---
+
+## 2. Tech Stack & Dependencies
+
+| Layer | Technology | Version / Details |
+|---|---|---|
+| **Framework** | Next.js (App Router) | `16.4.3` |
+| **Language** | TypeScript / JavaScript | Strict TypeScript |
+| **UI Library** | React 19 | `19.3.1` |
+| **Styling** | Tailwind CSS v4 | PostCSS `@tailwindcss/postcss ^4` |
+| **Component Primitives** | `@base-ui/react` | Modern headless UI components |
+| **Icons** | `lucide-react` | Standard vector icons |
+| **Authentication** | Better Auth | `better-auth ^1.7.18` (Email/Password + Google OAuth) |
+| **Database Adapter** | MongoDB Driver | `@better-auth/mongo-adapter ^1.7.18` on `hireloop_db` |
+| **Feedback & Notifications** | `react-hot-toast` | Toast alerts for auth & user actions |
+| **Animation Utilities** | `tw-animate-css` | Smooth CSS transitions & micro-interactions |
+
+---
+
+## 3. Project Structure
+
+```text
+hireloop-client/
+├── app/
+│   ├── (auth)/
+│   │   ├── signin/page.tsx      # Sign In page (session redirect + validation)
+│   │   └── signup/page.tsx      # Sign Up page (account registration)
+│   ├── api/
+│   │   └── auth/[...all]/       # Better Auth API route handler
+│   ├── globals.css              # Tailwind v4 theme, OKLCH colors, layers
+│   ├── layout.tsx               # Root layout (ThemeProvider, Navbar, suppressHydrationWarning)
+│   └── page.tsx                 # Home landing page
+├── components/
+│   ├── Home/                    # Landing page feature sections
+│   │   ├── HeroSection.tsx      # Globe atmosphere, search bar, stats cards
+│   │   ├── FeaturesSection.tsx  # Platform capabilities grid
+│   │   ├── PricingSection.tsx   # Billing toggle + tiered plan cards
+│   │   └── CTASection.tsx       # Bottom call-to-action banner
+│   ├── Shared/                  # Shared global layout components
+│   │   ├── Navbar.tsx           # Sticky glassmorphic navbar with mobile drawer
+│   │   ├── UserProfileDropdown.tsx # Session avatar & profile dropdown
+│   │   └── Footer.tsx           # Multi-column footer & copyright
+│   ├── ui/                      # Base UI primitives (buttons, sheets, etc.)
+│   └── Loading.tsx              # Centered spinner loading component
+├── lib/
+│   ├── auth.ts                  # Better Auth server instance & MongoDB adapter
+│   ├── auth-client.ts           # Client auth helpers (useSession, signIn, signOut)
+│   └── utils.ts                 # Utility functions (cn class merging)
+├── public/
+│   ├── images/                  # Platform artwork (globe, cta-bg, logo.png)
+│   ├── logos/                   # Partner & employer SVG logos
+│   └── profile.jpg              # Default user avatar fallback
+```
+
+---
+
+## 4. Tailwind CSS v4 Canonical Rules (STRICT)
+
+This project strictly runs **Tailwind CSS v4**. To avoid `suggestCanonicalClasses` linting warnings and maintain clean CSS generation:
+
+### A. Opacity Utilities
+Always use integer percentages instead of arbitrary decimal brackets:
+* ✅ `bg-white/2` instead of ❌ `bg-white/[0.02]`
+* ✅ `bg-white/4` instead of ❌ `bg-white/[0.04]`
+* ✅ `border-white/6` instead of ❌ `border-white/[0.06]`
+* ✅ `border-white/8` instead of ❌ `border-white/[0.08]`
+* ✅ `border-white/10` instead of ❌ `border-white/[0.1]`
+* ✅ `text-white/80` instead of ❌ `text-white/[0.8]`
+
+### B. Spacing, Heights & Widths
+Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
+* ✅ `h-px` and `w-px` instead of ❌ `h-[1px]` / `w-[1px]`
+* ✅ `min-h-115` instead of ❌ `min-h-[460px]`
+* ✅ `min-h-130` instead of ❌ `min-h-[520px]`
+* ✅ `h-105` instead of ❌ `h-[420px]`
+* ✅ `w-220` instead of ❌ `w-[880px]`
+* ✅ `md:-mt-75` instead of ❌ `md:-mt-[300px]`
+* ✅ `lg:-mt-90` instead of ❌ `lg:-mt-[360px]`
+
+### C. Gradients (Tailwind v4 syntax)
+* ✅ `bg-linear-to-r` instead of ❌ `bg-gradient-to-r`
+* ✅ `bg-linear-to-t` instead of ❌ `bg-gradient-to-t`
+* ✅ `bg-linear-to-b` instead of ❌ `bg-gradient-to-b`
+
+### D. Modern Mask Utility
+* ✅ `mask-[...]` instead of ❌ `[mask-image:...]`
+
+---
+
+## 5. Authentication & State Best Practices
+
+1. **Client Hook Import:**
+   Always import authentication utilities directly from `@/lib/auth-client`:
+   ```ts
+   import { useSession, signOut, signIn, signUp } from "@/lib/auth-client"
+   ```
+
+2. **No Navigation During Render (Zero Side-Effects in Component Body):**
+   Never call `router.push()` or trigger navigation directly inside the body of a React component during render. Always execute route changes inside a `useEffect`:
+   ```tsx
+   useEffect(() => {
+     if (!isPending && session) {
+       router.push(callbackUrl)
+     }
+   }, [session, isPending, callbackUrl, router])
+   ```
+
+3. **User Profile Image Fallback:**
+   When rendering user avatars, always provide an image fallback to `/profile.jpg` in case `user.image` is null, empty, or fails to load:
+   ```tsx
+   <Image
+     src={user.image || "/profile.jpg"}
+     alt={user.name || "Profile"}
+     width={36}
+     height={36}
+     className="rounded-full object-cover"
+     onError={(e) => { e.currentTarget.src = "/profile.jpg" }}
+   />
+   ```
+
+4. **Rules of Hooks:**
+   All React hooks (`useState`, `useRouter`, `useSearchParams`, `useSession`, `useEffect`) must be declared unconditionally at the very top of components before any early returns.
+
+---
+
+## 6. UI & Design System Standards
+
+* **Aesthetic:** Dark universe / deep cosmic theme (`bg-neutral-950` / `#0c0d12` / `#12121b`).
+* **Glassmorphism:** Use `backdrop-blur-xl`, `border-white/10`, and translucent backgrounds (`bg-neutral-900/90` or `bg-white/5`).
+* **Brand Accents:** Vibrant violet/indigo (`#6055f6`, `bg-violet-600`, `text-violet-400`).
+* **Responsiveness:** Mobile-first approach. Verify layouts at 360px (mobile), 768px (tablet), 1024px (desktop), and 1440px+ (large display).
