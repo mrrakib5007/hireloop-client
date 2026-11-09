@@ -4,8 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import { SiteNavbar } from "@/components/Shared/Navbar"
-import { SiteFooter } from "@/components/Shared/Footer"
 import { Toaster } from "react-hot-toast"
 
 export const metadata: Metadata = {
@@ -37,7 +35,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "antialiased",
+        "dark antialiased",
         fontMono.variable,
         "font-sans",
         geist.variable
@@ -47,11 +45,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className="overflow-x-hidden bg-neutral-950 text-white"
       >
-        <ThemeProvider>
-          <SiteNavbar />
+        <ThemeProvider>          
           <Toaster position="top-center" reverseOrder={false} />
-          {children}
-          <SiteFooter />
+          {children}          
         </ThemeProvider>
       </body>
     </html>

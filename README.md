@@ -16,7 +16,7 @@ HireLoop is a modern job board and talent platform that connects job seekers wit
 
 ## Features
 - Authentication & Roles: Email/password and Google OAuth authentication with role selection (Candidate, Recruiter, Admin) and server-side validation
-- User Session & Profile: Dynamic profile avatar with responsive dropdown menu and fallback handling
+- User Session & Profile: Dynamic profile avatar with responsive dropdown menu, role-based status badge (Admin, Recruiter, Candidate), and fallback handling
 - Job Search: Search filtering by job title, keywords, company, and location/remote preferences
 - Navigation: Sticky glassmorphic desktop navbar and responsive mobile drawer navigation
 - Tiered Pricing: Flexible monthly and yearly subscription billing tiers

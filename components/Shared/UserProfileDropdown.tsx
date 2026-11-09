@@ -20,22 +20,37 @@ interface UserProfileDropdownProps {
     name?: string | null
     email?: string | null
     image?: string | null
+    role?: string | null
   }
+}
+
+const roleBadgeConfig: Record<
+  string,
+  { label: string; className: string }
+> = {
+  admin: {
+    label: "Admin",
+    className: "border-rose-500/40 bg-rose-500/15 text-rose-300",
+  },
+  recruiter: {
+    label: "Recruiter",
+    className: "border-sky-500/40 bg-sky-500/15 text-sky-300",
+  },
+  candidate: {
+    label: "Candidate",
+    className: "border-violet-500/40 bg-violet-500/15 text-violet-300",
+  },
 }
 
 export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const [avatarSrc, setAvatarSrc] = useState<string>(
-    user.image || "/profile.jpg"
-  )
+  const [imageError, setImageError] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Update avatarSrc if user.image changes
-  useEffect(() => {
-    setAvatarSrc(user.image || "/profile.jpg")
-  }, [user.image])
+  // Derive avatarSrc with fallback; if image fails to load, fallback to /profile.jpg
+  const avatarSrc = !imageError && user.image ? user.image : "/profile.jpg"
 
   // Close dropdown on click outside or Escape key
   useEffect(() => {
@@ -86,6 +101,16 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
 
   const displayName = user.name || "User"
   const displayEmail = user.email || ""
+  const normalizedRole = (user.role || "candidate").trim().toLowerCase()
+  const currentRole = roleBadgeConfig[normalizedRole] || roleBadgeConfig.candidate
+
+  // Dynamic dashboard URL based on user role
+  const roleDashboardMap: Record<string, string> = {
+    admin: "/dashboard/admin",
+    recruiter: "/dashboard/recruiter",
+    candidate: "/dashboard/candidate",
+  }
+  const dashboardUrl = roleDashboardMap[normalizedRole] || "/dashboard/candidate"
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -105,7 +130,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             width={36}
             height={36}
             className="size-full object-cover"
-            onError={() => setAvatarSrc("/profile.jpg")}
+            onError={() => setImageError(true)}
           />
         </div>
       </button>
@@ -126,15 +151,22 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                 width={40}
                 height={40}
                 className="size-full object-cover"
-                onError={() => setAvatarSrc("/profile.jpg")}
+                onError={() => setImageError(true)}
               />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-white">
-                {displayName}
-              </p>
+              <div className="flex items-center justify-between gap-1.5">
+                <p className="truncate text-sm font-semibold text-white">
+                  {displayName}
+                </p>
+                <span
+                  className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${currentRole.className}`}
+                >
+                  {currentRole.label}
+                </span>
+              </div>
               {displayEmail && (
-                <p className="truncate text-xs text-neutral-400">
+                <p className="truncate text-xs text-neutral-400 mt-0.5">
                   {displayEmail}
                 </p>
               )}
@@ -146,7 +178,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
           {/* Navigation Items */}
           <div className="space-y-0.5">
             <Link
-              href="/dashboard"
+              href={dashboardUrl}
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-neutral-200 transition-colors hover:bg-white/10 hover:text-white"
               role="menuitem"
@@ -193,7 +225,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             type="button"
             onClick={handleSignOut}
             disabled={isLoggingOut}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50 cursor-pointer"
             role="menuitem"
           >
             {isLoggingOut ? (
