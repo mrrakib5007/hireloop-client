@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
+import { authClient, signOut } from "@/lib/auth-client";
 import {
   LayoutDashboard,
   Briefcase,
@@ -20,10 +20,12 @@ import {
   Settings,
   Building2,
   Users,
+  LogOut,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 type Role = "candidate" | "recruiter" | "admin";
@@ -138,36 +140,56 @@ export const sidebarItemsByRole: Record<Role, SidebarItem[]> = {
   ],
 };
 
-const portalMeta: Record<Role, { title: string; subtitle: string }> = {
-  candidate: {
-    title: "Seeker Portal",
-    subtitle: "Professional Tier",
-  },
-  recruiter: {
-    title: "Recruiter Portal",
-    subtitle: "Recruiter Tier",
-  },
-  admin: {
-    title: "Admin Console",
-    subtitle: "Systems Admin",
-  },
+const roleDisplayNames: Record<Role, string> = {
+  candidate: "Candidate",
+  recruiter: "Recruiter",
+  admin: "Admin",
+};
+
+const roleTierLabels: Record<Role, string> = {
+  candidate: "FREE",
+  recruiter: "Premium",
+  admin: "Premium",
 };
 
 export function AppSidebar() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
+  const router = useRouter();
   const [imageError, setImageError] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const role = (session?.user?.role as Role) || "candidate";
-  const currentPortal = portalMeta[role] || portalMeta.candidate;
   const menuItems = sidebarItemsByRole[role] || [];
+
+  const displayName = session?.user?.name || "Alex Sterling";
+  const displayRole = roleDisplayNames[role] || "Candidate";
+  const tierBadge = roleTierLabels[role] || "Premium account";
 
   const avatarSrc =
     !imageError && session?.user?.image ? session.user.image : "/profile.jpg";
 
+  const handleSignOut = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/signin");
+            router.refresh();
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <Sidebar className="border-r border-white/5 bg-[#090b10] text-white">
-      {/* Brand & Identity Header (Same to same Figma) */}
+      {/* Brand & Identity Header */}
       <SidebarHeader className="border-b border-white/5 p-4 space-y-4">
         {/* Logo */}
         <div className="px-1 pt-1">
@@ -183,25 +205,30 @@ export function AppSidebar() {
           </Link>
         </div>
 
-        {/* Identity Card */}
-        <div className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#121520] p-2.5">
-          <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-1 ring-white/10">
+        {/* Identity Card (Profile Image, Name, Role, Premium Badge) */}
+        <div className="flex items-center gap-3.5 rounded-2xl border border-white/5 bg-[#121522] p-3 shadow-sm">
+          <div className="relative size-11 shrink-0 overflow-hidden rounded-full ring-1 ring-white/10">
             <Image
               src={avatarSrc}
-              alt={currentPortal.title}
-              width={40}
-              height={40}
+              alt={displayName}
+              width={44}
+              height={44}
               className="size-full object-cover"
               onError={() => setImageError(true)}
             />
           </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate text-sm font-semibold text-white tracking-tight">
-              {currentPortal.title}
+          <div className="min-w-0 flex-1 flex flex-col justify-center">
+            <h3 className="truncate text-sm font-semibold text-white tracking-tight leading-tight">
+              {displayName}
             </h3>
-            <p className="truncate text-xs text-neutral-400">
-              {currentPortal.subtitle}
+            <p className="truncate text-xs text-neutral-400 capitalize mt-0.5 leading-tight">
+              {displayRole}
             </p>
+            <div className="mt-1.5">
+              <span className="inline-flex items-center rounded-full border border-[#2b3558] bg-[#1a2139] px-2.5 py-0.5 text-[10.5px] font-medium text-indigo-300 w-fit">
+                {tierBadge}
+              </span>
+            </div>
           </div>
         </div>
       </SidebarHeader>
@@ -248,9 +275,21 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer */}
-      <SidebarFooter className="border-t border-white/5 px-4 py-3 text-[11px] text-neutral-500">
-        HireLoop Workspace
+      {/* Footer Logout Button */}
+      <SidebarFooter className="border-t border-white/5 p-3">
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={isLoggingOut}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50 cursor-pointer"
+        >
+          {isLoggingOut ? (
+            <Loader2 className="size-4.5 animate-spin text-red-400" />
+          ) : (
+            <LogOut className="size-4.5 text-red-400" />
+          )}
+          <span>{isLoggingOut ? "Signing out..." : "Log Out"}</span>
+        </button>
       </SidebarFooter>
     </Sidebar>
   );
