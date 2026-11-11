@@ -145,7 +145,10 @@ export default function AddJobPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        ...formData,
+        createdAt: new Date().toISOString(),
+      }),
     }).then((response) => {
         if (!response.ok) {
              toast.error("Failed to publish job listing")

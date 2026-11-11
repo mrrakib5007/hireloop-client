@@ -87,15 +87,25 @@ Always use integer percentages instead of arbitrary decimal brackets:
 * ✅ `border-white/10` instead of ❌ `border-white/[0.1]`
 * ✅ `text-white/80` instead of ❌ `text-white/[0.8]`
 
-### B. Spacing, Heights & Widths
-Use Tailwind's numeric scale (multiples of 4px) instead of arbitrary brackets:
-* ✅ `h-px` and `w-px` instead of ❌ `h-[1px]` / `w-[1px]`
-* ✅ `min-h-115` instead of ❌ `min-h-[460px]`
-* ✅ `min-h-130` instead of ❌ `min-h-[520px]`
-* ✅ `h-105` instead of ❌ `h-[420px]`
-* ✅ `w-220` instead of ❌ `w-[880px]`
-* ✅ `md:-mt-75` instead of ❌ `md:-mt-[300px]`
-* ✅ `lg:-mt-90` instead of ❌ `lg:-mt-[360px]`
+### B. Spacing, Heights, Widths & Max/Min Constraints
+Tailwind CSS v4 replaces arbitrary pixel bracket notation (`[Npx]`) with canonical numeric units based on the 4px scale (`N / 4`):
+* **Widths & Max-Widths:**
+  * ✅ `max-w-31.25` instead of ❌ `max-w-[125px]` (125 / 4 = 31.25)
+  * ✅ `max-w-47.5` instead of ❌ `max-w-[190px]` (190 / 4 = 47.5)
+  * ✅ `max-w-26.25` instead of ❌ `max-w-[105px]` (105 / 4 = 26.25)
+  * ✅ `max-w-38.75` instead of ❌ `max-w-[155px]` (155 / 4 = 38.75)
+  * ✅ `max-w-23.75` instead of ❌ `max-w-[95px]` (95 / 4 = 23.75)
+  * ✅ `max-w-36.25` instead of ❌ `max-w-[145px]` (145 / 4 = 36.25)
+  * ✅ `w-220` instead of ❌ `w-[880px]`
+  * ✅ `min-w-212.5` instead of ❌ `min-w-[850px]`
+* **Heights & Margins:**
+  * ✅ `h-px` and `w-px` instead of ❌ `h-[1px]` / `w-[1px]`
+  * ✅ `min-h-115` instead of ❌ `min-h-[460px]`
+  * ✅ `min-h-130` instead of ❌ `min-h-[520px]`
+  * ✅ `h-105` instead of ❌ `h-[420px]`
+  * ✅ `md:-mt-75` instead of ❌ `md:-mt-[300px]`
+  * ✅ `lg:-mt-90` instead of ❌ `lg:-mt-[360px]`
+* **Strict Rule:** Never write arbitrary pixel bracket classes like `max-w-[...px]`, `w-[...px]`, `h-[...px]` when Tailwind v4 can express it canonically as `valueInPx / 4`.
 
 ### C. Gradients (Tailwind v4 syntax)
 * ✅ `bg-linear-to-r` instead of ❌ `bg-gradient-to-r`

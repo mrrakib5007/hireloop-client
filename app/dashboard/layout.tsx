@@ -19,7 +19,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 min-h-screen bg-neutral-950 text-white p-4 md:p-6">
+      <main className="flex-1 min-w-0 w-full min-h-screen bg-neutral-950 text-white p-4 md:p-6 overflow-x-hidden">
         <div className="mb-4 flex items-center gap-2">
           <SidebarTrigger />
         </div>

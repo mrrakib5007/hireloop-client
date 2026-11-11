@@ -18,7 +18,9 @@ HireLoop is a modern job board and talent platform that connects job seekers wit
 - Authentication & Roles: Email/password and Google OAuth authentication with role selection (Candidate, Recruiter, Admin) and server-side validation
 - User Session & Profile: Dynamic profile avatar with responsive dropdown menu, role-based status badge (Admin, Recruiter, Candidate), and fallback handling
 - Job Search: Search filtering by job title, keywords, company, and location/remote preferences
+- Recruiter Job Management: Dynamic job listings integrated with server-side REST API (/jobs, /add-job, /jobs/:id) featuring automated category themes, status detection, responsive desktop table with zero overflow, mobile card layout, dedicated job edit route (/dashboard/recruiter/edit-job/[id]), delete confirmation modal dialogs, and empty-state fallbacks
 - Navigation: Sticky glassmorphic desktop navbar and responsive mobile drawer navigation
 - Tiered Pricing: Flexible monthly and yearly subscription billing tiers
 - Platform Capabilities: AI job matching, verified employer listings, and career growth resources
 - Responsive Design: Fully responsive layouts across mobile, tablet, and desktop screens
+- Custom Error Handling: Global 404 not-found page with cosmic glassmorphic design and direct navigation shortcuts
